@@ -52,8 +52,8 @@ function App() {
     if (isLoggedIn) {
       api
         .getUserInfo()
-        .then((profileInfo) => {
-          setCurrentUser(profileInfo);
+        .then((data) => {
+          setCurrentUser(data.user);
         })
         .catch((err) => {
           console.log(err);
@@ -108,7 +108,7 @@ function App() {
       .setUserInfo(newUserInfo)
       .then((data) => {
         setIsUpdate(true);
-        setCurrentUser(data);
+        setCurrentUser(data.user);
       })
       .catch((err) => {
         setIsSuccess(false);

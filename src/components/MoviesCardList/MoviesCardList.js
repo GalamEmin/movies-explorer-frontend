@@ -4,7 +4,8 @@ import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
 import SearchError from '../SearchError/SearchError';
-import { SHOW_MORE_DECKTOP, SHOW_MORE_TABLET, SHOW_MORE_MOBILE } from '../../utils/constants';
+import { SHOW_MORE_DESKTOP, SHOW_MORE_TABLET, SHOW_MORE_MOBILE } from '../../utils/constants';
+import { SHOW_MORE_DESKTOP_BREAKPOINT, SHOW_MORE_TABLET_BREAKPOINT, SHOW_MORE_MOBILE_BREAKPOINT } from '../../utils/constants';
 
 function MoviesCardList({
   cards,
@@ -21,13 +22,13 @@ function MoviesCardList({
 
   function shownCount() {
     const display = window.innerWidth;
-    if (display > 1180) {
+    if (display > SHOW_MORE_DESKTOP_BREAKPOINT) {
       setShownMovies(16);
-    } else if (display > 1023) {
+    } else if (display > SHOW_MORE_TABLET_BREAKPOINT) {
       setShownMovies(12);
-    } else if (display > 800) {
+    } else if (display > SHOW_MORE_MOBILE_BREAKPOINT) {
       setShownMovies(8);
-    } else if (display < 800) {
+    } else if (display < SHOW_MORE_MOBILE_BREAKPOINT) {
       setShownMovies(5);
     }
   }
@@ -40,15 +41,19 @@ function MoviesCardList({
     setTimeout(() => {
       window.addEventListener('resize', shownCount);
     }, 500);
+
+    return () => {
+      window.removeEventListener('resize', shownCount)
+    };
   });
 
   function showMore() {
     const display = window.innerWidth;
-    if (display > 1180) {
-      setShownMovies(shownMovies + SHOW_MORE_DECKTOP);
-    } else if (display > 1023) {
+    if (display > SHOW_MORE_DESKTOP_BREAKPOINT) {
+      setShownMovies(shownMovies + SHOW_MORE_DESKTOP);
+    } else if (display > SHOW_MORE_TABLET_BREAKPOINT) {
       setShownMovies(shownMovies + SHOW_MORE_TABLET);
-    } else if (display < 1023) {
+    } else if (display < SHOW_MORE_TABLET_BREAKPOINT) {
       setShownMovies(shownMovies + SHOW_MORE_MOBILE);
     }
   }
