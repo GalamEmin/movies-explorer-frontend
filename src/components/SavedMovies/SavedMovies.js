@@ -1,22 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './SavedMovies.css';
 import Header from '../Header/Header';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Footer from '../Footer/Footer';
+import { filterMovies, filterDuration } from '../../utils/utils';
 
-const movies = [
-  { _id: 1, image: { url: 'uploads/stones_in_exile_b2f1b8f4b7.jpeg' }, nameRU: '33 слова о дизайне', time: '1ч 42м', saved: true },
-  { _id: 2, image: { url: 'uploads/stones_in_exile_b2f1b8f4b7.jpeg' }, nameRU: '34 слова о дизайне', time: '1ч 42м', saved: false },
-  { _id: 3, image: { url: 'uploads/stones_in_exile_b2f1b8f4b7.jpeg' }, nameRU: '35 слов о дизайне', time: '1ч 42м', saved: false },
-];
+function SavedMovies({ loggedIn, savedMovies, onCardDelete }) {
+  const [filteredMovies, setFilteredMovies] = useState(savedMovies);
+  const [isShortMovies, setIsShortMovies] = useState(false);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-function SavedMovies() {
+  function onSearchMovies(query) {
+    setSearchQuery(query);
+  }
+
+  function handleShortMovies() {
+    setIsShortMovies(!isShortMovies);
+  }
+
+  useEffect(() => {
+    const moviesList = filterMovies(savedMovies, searchQuery);
+    setFilteredMovies(isShortMovies ? filterDuration(moviesList) : moviesList);
+  }, [savedMovies, isShortMovies, searchQuery]);
+
+  useEffect(() => {
+    if (filteredMovies.length === 0) {
+      setIsNotFound(true);
+    } else {
+      setIsNotFound(false);
+    }
+  }, [filteredMovies]);
+
   return (
     <section className="movies">
-      <Header />
-      <SearchForm />
-      <MoviesCardList cards={movies} isSavedFilms={true} />
+      <Header loggedIn={loggedIn} />
+      <SearchForm onSearchMovies={onSearchMovies} onFilter={handleShortMovies} />
+      <MoviesCardList
+        isNotFound={isNotFound}
+        isSavedFilms={true}
+        cards={filteredMovies}
+        savedMovies={savedMovies}
+        onCardDelete={onCardDelete}
+      />
       <Footer />
     </section>
   );
